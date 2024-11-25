@@ -17,7 +17,13 @@ const highlightText = (text, highlight) => {
   );
 };
 
-const Data = ({ searchQuery, filter, sortBy, timeRange }) => {
+const Data = ({
+  searchQuery,
+  filter,
+  sortBy,
+  timeRange,
+  onResultInfoUpdate,
+}) => {
   const [stories, setStories] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -86,6 +92,9 @@ const Data = ({ searchQuery, filter, sortBy, timeRange }) => {
       const endTime = performance.now();
       const timeDifference = ((endTime - startTime) / 1000).toFixed(3);
       setTimeTaken(timeDifference);
+
+      // Pass updated values to Dashboard via callback
+      onResultInfoUpdate(data.nbHits, timeDifference);
     } catch (error) {
       console.error("Error fetching stories:", error);
     } finally {
@@ -110,15 +119,18 @@ const Data = ({ searchQuery, filter, sortBy, timeRange }) => {
   };
 
   useEffect(() => {
-    fetchStories(page, searchQuery, filter, sortBy, timeRange);
+    fetchStories(
+      page,
+      searchQuery,
+      filter,
+      sortBy,
+      timeRange,
+      onResultInfoUpdate
+    );
   }, [page, searchQuery, filter, sortBy, timeRange]);
 
   return (
     <div className="max-w-7xl py-2 flex flex-col">
-      <p>
-        {totalResults.toLocaleString()} results ({timeTaken} seconds)
-      </p>
-
       {stories.map((story, i) => (
         <div key={i} className="mb-5">
           <h2 className="font-medium">

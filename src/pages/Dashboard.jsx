@@ -4,24 +4,28 @@ import Data from "../components/Data";
 
 function Dashboard({ username }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("story"); // Filter by type
-  const [sortBy, setSortBy] = useState("popularity"); // Sort by popularity or date
-  const [timeRange, setTimeRange] = useState("all_time"); // Time range filter
+  const [filter, setFilter] = useState("story"); // Default filter
+  const [sortBy, setSortBy] = useState("popularity"); // Default sorting
+  const [timeRange, setTimeRange] = useState("all_time"); // Default time range
+  const [resultInfo, setResultInfo] = useState({
+    totalResults: 0,
+    timeTaken: 0,
+  }); // To store results and time info
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
   const handleFilterChange = (e) => {
-    setFilter(e.target.value);
+    setFilter(e.target.value); // Update filter based on selection
   };
 
   const handleSortByChange = (e) => {
-    setSortBy(e.target.value); // Update sortBy
+    setSortBy(e.target.value); // Update sorting
   };
 
   const handleTimeRangeChange = (e) => {
-    setTimeRange(e.target.value); // Update timeRange
+    setTimeRange(e.target.value); // Update time range
   };
 
   return (
@@ -29,14 +33,13 @@ function Dashboard({ username }) {
       <SerachBar username={username} onSearch={handleSearch} />
       <div className="flex w-full justify-between ">
         <div className="flex text-sm">
-          {/* Filter by Type */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">Search</p>
             <select
               name="hnFilter"
               className="w-fit border-[1px] outline-none border-gray-500"
               id="hnFilter"
-              onChange={handleFilterChange}
+              onChange={handleFilterChange} // Listen for changes
             >
               <option value="all">All</option>
               <option value="story">Stories</option>
@@ -48,8 +51,6 @@ function Dashboard({ username }) {
               <option value="poll">Polls</option>
             </select>
           </div>
-
-          {/* Sort by */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">by</p>
             <select
@@ -62,8 +63,6 @@ function Dashboard({ username }) {
               <option value="date">Date</option>
             </select>
           </div>
-
-          {/* Time Range */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">All time</p>
             <select
@@ -73,25 +72,30 @@ function Dashboard({ username }) {
               onChange={handleTimeRangeChange}
             >
               <option value="all_time">All time</option>
-              <option value="last_24h">Last 24h</option>
+              <option value="last_24h">Last 24 hours</option>
               <option value="past_week">Past Week</option>
               <option value="past_month">Past Month</option>
               <option value="past_year">Past Year</option>
-              <option value="custom_range">Custom range</option>
             </select>
           </div>
         </div>
+        {/* Replace static text with dynamic data */}
         <div className="px-3 py-2 text-sm text-gray-600">
-          <p>38,359,332 results (0.003 seconds)</p>
+          <p>
+            {resultInfo.totalResults.toLocaleString()} results (
+            {resultInfo.timeTaken} seconds)
+          </p>
         </div>
       </div>
       <div className="flex w-full px-3">
-        {/* Pass all filters as props */}
         <Data
           searchQuery={searchQuery}
           filter={filter}
           sortBy={sortBy}
           timeRange={timeRange}
+          onResultInfoUpdate={(totalResults, timeTaken) =>
+            setResultInfo({ totalResults, timeTaken })
+          }
         />
       </div>
     </div>
