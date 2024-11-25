@@ -17,7 +17,7 @@ const highlightText = (text, highlight) => {
   );
 };
 
-const Data = ({ searchQuery, filter }) => {
+const Data = ({ searchQuery, filter, sortBy, timeRange }) => {
   const [stories, setStories] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -43,19 +43,41 @@ const Data = ({ searchQuery, filter }) => {
     return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
   };
 
-  const fetchStories = async (page, query, filter) => {
+  const fetchStories = async (page, query, filter, sortBy, timeRange) => {
     setLoading(true);
     const startTime = performance.now();
+
     try {
-      // Adjust fetch URL based on filter
+      let baseUrl = `http://hn.algolia.com/api/v1/search`;
       const filterTag = filter !== "all" ? `&tags=${filter}` : "";
+
+      // Handle sorting
+      if (sortBy === "date") {
+        baseUrl = `http://hn.algolia.com/api/v1/search_by_date`;
+      }
+
+      // Handle time range filtering
+      const now = Date.now() / 1000;
+      let timeFilter = "";
+      const timeRanges = {
+        last_24h: now - 24 * 60 * 60,
+        past_week: now - 7 * 24 * 60 * 60,
+        past_month: now - 30 * 24 * 60 * 60,
+        past_year: now - 365 * 24 * 60 * 60,
+      };
+
+      if (timeRange !== "all_time" && timeRanges[timeRange]) {
+        timeFilter = `&numericFilters=created_at_i>${timeRanges[timeRange]}`;
+      }
+
       const response = await fetch(
-        `http://hn.algolia.com/api/v1/search?query=${query}${filterTag}&page=${page}`
+        `${baseUrl}?query=${query}${filterTag}${timeFilter}&page=${page}`
       );
 
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
+
       const data = await response.json();
       setTotalResults(data.nbHits);
       setStories(data.hits);
@@ -65,7 +87,7 @@ const Data = ({ searchQuery, filter }) => {
       const timeDifference = ((endTime - startTime) / 1000).toFixed(3);
       setTimeTaken(timeDifference);
     } catch (error) {
-      console.log("Error fetching stories:", error);
+      console.error("Error fetching stories:", error);
     } finally {
       setLoading(false);
     }
@@ -74,20 +96,6 @@ const Data = ({ searchQuery, filter }) => {
   const handlePageChange = (pageNumber) => {
     setPage(pageNumber);
     window.scrollTo(0, 0);
-  };
-
-  const nextPageData = () => {
-    if (page < totalPages - 1) {
-      setPage((prev) => prev + 1);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const prevPageData = () => {
-    if (page > 0) {
-      setPage(0); // Move directly to the first page
-      window.scrollTo(0, 0);
-    }
   };
 
   const paginationNumbers = () => {
@@ -102,8 +110,8 @@ const Data = ({ searchQuery, filter }) => {
   };
 
   useEffect(() => {
-    fetchStories(page, searchQuery, filter);
-  }, [page, searchQuery, filter]);
+    fetchStories(page, searchQuery, filter, sortBy, timeRange);
+  }, [page, searchQuery, filter, sortBy, timeRange]);
 
   return (
     <div className="max-w-7xl py-2 flex flex-col">
@@ -130,15 +138,6 @@ const Data = ({ searchQuery, filter }) => {
 
       {!loading && (
         <div className="mt-5 text-center">
-          {page > 0 && (
-            <button
-              onClick={() => setPage(0)} // Reset to first page
-              className="px-2 text-gray-400 rounded border-[1px] text-center border-gray-400"
-            >
-              {"<"}
-            </button>
-          )}
-
           {/* Pagination */}
           {paginationNumbers().map((num) => (
             <button
@@ -154,15 +153,6 @@ const Data = ({ searchQuery, filter }) => {
               {num + 1}
             </button>
           ))}
-
-          {page < totalPages - 1 && (
-            <button
-              onClick={() => setPage(page + 1)}
-              className="px-2 text-gray-400 rounded border-[1px] text-center border-gray-400"
-            >
-              {">"}
-            </button>
-          )}
         </div>
       )}
     </div>

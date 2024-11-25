@@ -4,28 +4,39 @@ import Data from "../components/Data";
 
 function Dashboard({ username }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("story"); // Default filter
+  const [filter, setFilter] = useState("story"); // Filter by type
+  const [sortBy, setSortBy] = useState("popularity"); // Sort by popularity or date
+  const [timeRange, setTimeRange] = useState("all_time"); // Time range filter
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
   const handleFilterChange = (e) => {
-    setFilter(e.target.value); // Update filter based on selection
+    setFilter(e.target.value);
+  };
+
+  const handleSortByChange = (e) => {
+    setSortBy(e.target.value); // Update sortBy
+  };
+
+  const handleTimeRangeChange = (e) => {
+    setTimeRange(e.target.value); // Update timeRange
   };
 
   return (
-    <div className="flex max-w-7xl mb-10 mx-auto flex-col items-center  justify-center  bg-gray-100">
+    <div className="flex max-w-7xl mb-10 mx-auto flex-col items-center justify-center bg-gray-100">
       <SerachBar username={username} onSearch={handleSearch} />
       <div className="flex w-full justify-between ">
         <div className="flex text-sm">
+          {/* Filter by Type */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">Search</p>
             <select
               name="hnFilter"
-              className="w-fit border-[1px]  outline-none border-gray-500"
+              className="w-fit border-[1px] outline-none border-gray-500"
               id="hnFilter"
-              onChange={handleFilterChange} // Listen for changes
+              onChange={handleFilterChange}
             >
               <option value="all">All</option>
               <option value="story">Stories</option>
@@ -37,30 +48,36 @@ function Dashboard({ username }) {
               <option value="poll">Polls</option>
             </select>
           </div>
+
+          {/* Sort by */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">by</p>
             <select
-              name="hnFilter"
-              className="w-[70px] border-[1px]  outline-none border-gray-500"
-              id="hnFilter"
+              name="sortBy"
+              className="w-[70px] border-[1px] outline-none border-gray-500"
+              id="sortBy"
+              onChange={handleSortByChange}
             >
-              <option value="all">Popularity</option>
-              <option value="stories">Date</option>
+              <option value="popularity">Popularity</option>
+              <option value="date">Date</option>
             </select>
           </div>
+
+          {/* Time Range */}
           <div className="flex gap-2 px-2 py-3">
             <p className="text-sm text-gray-800">All time</p>
             <select
-              name="hnFilter"
-              className="w-[70px]  border-[1px]  outline-none border-gray-500"
-              id="hnFilter"
+              name="timeRange"
+              className="w-[70px] border-[1px] outline-none border-gray-500"
+              id="timeRange"
+              onChange={handleTimeRangeChange}
             >
-              <option value="all">All time</option>
-              <option value="stories">Last 24th</option>
-              <option value="comments">Past Week</option>
-              <option value="ask">Past Month</option>
-              <option value="show">Past Year</option>
-              <option value="launch">Custom range</option>
+              <option value="all_time">All time</option>
+              <option value="last_24h">Last 24h</option>
+              <option value="past_week">Past Week</option>
+              <option value="past_month">Past Month</option>
+              <option value="past_year">Past Year</option>
+              <option value="custom_range">Custom range</option>
             </select>
           </div>
         </div>
@@ -69,7 +86,13 @@ function Dashboard({ username }) {
         </div>
       </div>
       <div className="flex w-full px-3">
-        <Data searchQuery={searchQuery} filter={filter} />
+        {/* Pass all filters as props */}
+        <Data
+          searchQuery={searchQuery}
+          filter={filter}
+          sortBy={sortBy}
+          timeRange={timeRange}
+        />
       </div>
     </div>
   );
