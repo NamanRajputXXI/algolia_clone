@@ -1,17 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import SerachBar from "../components/SerachBar";
 import Data from "../components/Data";
 
 function Dashboard({ username }) {
-  // const handleLogout = () => {
-  //   localStorage.removeItem("username");
-  //   localStorage.removeItem("password");
-  //   window.location.reload();
-  // };
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
   return (
     <div className="flex max-w-7xl mb-10 mx-auto flex-col items-center  justify-center  bg-gray-100">
-      <SerachBar username={username} />
+      <SerachBar username={username} onSearch={handleSearch} />
       <div className="flex w-full justify-between ">
         <div className="flex text-sm">
           <div className="flex gap-2 px-2 py-3">
@@ -63,7 +62,7 @@ function Dashboard({ username }) {
         </div>
       </div>
       <div className="flex w-full px-3">
-        <Data />
+        <Data searchQuery={searchQuery} />
       </div>
     </div>
   );
