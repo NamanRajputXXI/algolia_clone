@@ -17,7 +17,7 @@ const highlightText = (text, highlight) => {
   );
 };
 
-const Data = ({ searchQuery }) => {
+const Data = ({ searchQuery, filter }) => {
   const [stories, setStories] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -43,13 +43,16 @@ const Data = ({ searchQuery }) => {
     return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
   };
 
-  const fetchStories = async (page, query) => {
+  const fetchStories = async (page, query, filter) => {
     setLoading(true);
     const startTime = performance.now();
     try {
+      // Adjust fetch URL based on filter
+      const filterTag = filter !== "all" ? `&tags=${filter}` : "";
       const response = await fetch(
-        `http://hn.algolia.com/api/v1/search?query=${query}&tags=story&page=${page}`
+        `http://hn.algolia.com/api/v1/search?query=${query}${filterTag}&page=${page}`
       );
+
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -99,8 +102,8 @@ const Data = ({ searchQuery }) => {
   };
 
   useEffect(() => {
-    fetchStories(page, searchQuery);
-  }, [page, searchQuery]);
+    fetchStories(page, searchQuery, filter);
+  }, [page, searchQuery, filter]);
 
   return (
     <div className="max-w-7xl py-2 flex flex-col">
@@ -129,13 +132,14 @@ const Data = ({ searchQuery }) => {
         <div className="mt-5 text-center">
           {page > 0 && (
             <button
-              onClick={prevPageData}
+              onClick={() => setPage(0)} // Reset to first page
               className="px-2 text-gray-400 rounded border-[1px] text-center border-gray-400"
             >
               {"<"}
             </button>
           )}
 
+          {/* Pagination */}
           {paginationNumbers().map((num) => (
             <button
               key={num}
@@ -153,7 +157,7 @@ const Data = ({ searchQuery }) => {
 
           {page < totalPages - 1 && (
             <button
-              onClick={nextPageData}
+              onClick={() => setPage(page + 1)}
               className="px-2 text-gray-400 rounded border-[1px] text-center border-gray-400"
             >
               {">"}

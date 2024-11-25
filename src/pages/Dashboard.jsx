@@ -4,10 +4,16 @@ import Data from "../components/Data";
 
 function Dashboard({ username }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("story"); // Default filter
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value); // Update filter based on selection
+  };
+
   return (
     <div className="flex max-w-7xl mb-10 mx-auto flex-col items-center  justify-center  bg-gray-100">
       <SerachBar username={username} onSearch={handleSearch} />
@@ -19,15 +25,16 @@ function Dashboard({ username }) {
               name="hnFilter"
               className="w-fit border-[1px]  outline-none border-gray-500"
               id="hnFilter"
+              onChange={handleFilterChange} // Listen for changes
             >
               <option value="all">All</option>
-              <option value="stories">Stories</option>
-              <option value="comments">Comments</option>
-              <option value="ask">Ask HN</option>
-              <option value="show">Show HN</option>
-              <option value="launch">Launch HN</option>
-              <option value="jobs">Jobs</option>
-              <option value="polls">Polls</option>
+              <option value="story">Stories</option>
+              <option value="comment">Comments</option>
+              <option value="ask_hn">Ask HN</option>
+              <option value="show_hn">Show HN</option>
+              <option value="launch_hn">Launch HN</option>
+              <option value="job">Jobs</option>
+              <option value="poll">Polls</option>
             </select>
           </div>
           <div className="flex gap-2 px-2 py-3">
@@ -62,7 +69,7 @@ function Dashboard({ username }) {
         </div>
       </div>
       <div className="flex w-full px-3">
-        <Data searchQuery={searchQuery} />
+        <Data searchQuery={searchQuery} filter={filter} />
       </div>
     </div>
   );
