@@ -134,10 +134,18 @@ const Data = ({
       {stories.map((story, i) => (
         <div key={i} className="mb-5">
           <h2 className="font-medium">
-            <a href={story.url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={story.url}
+              className="break-words"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {highlightText(story.title, searchQuery)}
             </a>
-            <a className="px-1 text-sm text-gray-600" href={story.url}>
+            <a
+              className="px-1  text-xs sm:text-sm text-gray-600 break-words"
+              href={story.url}
+            >
               {highlightText(`(${story.url})`, searchQuery)}
             </a>
           </h2>
@@ -145,6 +153,14 @@ const Data = ({
             {story.points} points | {highlightText(story.author, searchQuery)} |{" "}
             {story.num_comments} comments | {timeAgo(story.created_at)}
           </p>
+          {story.story_text && (
+            <div
+              className="space-y-2 mt-1 break-words text-xs sm:text-sm"
+              dangerouslySetInnerHTML={{
+                __html: story.story_text,
+              }}
+            />
+          )}
         </div>
       ))}
 
@@ -154,7 +170,7 @@ const Data = ({
           {page > 0 && ( // Only render the button if the page is greater than 0
             <button
               onClick={() => handlePageChange(0)} // Always move to the first page
-              className={`px-2 text-gray-400 rounded text-md border-[1px] border-gray-400 hover:border-[#ff742b]`}
+              className={`md:px-2 px-1 text-gray-400 rounded text- md:text-md text-xs border-[1px] border-gray-400 hover:border-[#ff742b]`}
             >
               &lt;
             </button>
@@ -166,7 +182,7 @@ const Data = ({
               key={num}
               onClick={() => handlePageChange(num)}
               disabled={page === num}
-              className={`px-2  text-gray-400 rounded text-md ${
+              className={`md:px-2 px-1  text-gray-400 rounded text-xs md:text-md ${
                 page === num
                   ? "border-[1px] border-[#ff742b] cursor-not-allowed"
                   : "border-[1px] border-gray-400"
@@ -180,7 +196,7 @@ const Data = ({
           <button
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages - 1}
-            className={`px-2  text-gray-400 rounded text-md ${
+            className={`md:px-2 px-1 text-gray-400 rounded text-xs md:text-md ${
               page === totalPages - 1
                 ? "border-[1px] border-gray-300 cursor-not-allowed"
                 : "border-[1px] border-gray-400 hover:border-[#ff742b]"

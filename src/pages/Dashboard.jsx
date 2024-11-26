@@ -34,10 +34,10 @@ function Dashboard({ username }) {
       <div className="flex w-full justify-between ">
         <div className="flex text-sm">
           <div className="flex gap-2 px-2 py-3">
-            <p className="text-sm text-gray-800">Search</p>
+            <p className="text-sm  md:flex hidden text-gray-800">Search</p>
             <select
               name="hnFilter"
-              className="w-fit border-[1px] outline-none border-gray-500"
+              className="md:w-28 text-xs w-24 md:text-base border-[1px] outline-none border-gray-500"
               id="hnFilter"
               onChange={handleFilterChange} // Listen for changes
             >
@@ -51,11 +51,11 @@ function Dashboard({ username }) {
               <option value="poll">Polls</option>
             </select>
           </div>
-          <div className="flex gap-2 px-2 py-3">
-            <p className="text-sm text-gray-800">by</p>
+          <div className="flex gap-2 px-0 md:px-2 py-3">
+            <p className="text-sm  md:flex hidden text-gray-800">by</p>
             <select
               name="sortBy"
-              className="w-[70px] border-[1px] outline-none border-gray-500"
+              className="md:w-28 w-20 text-xs md:text-base border-[1px] outline-none border-gray-500"
               id="sortBy"
               onChange={handleSortByChange}
             >
@@ -64,10 +64,10 @@ function Dashboard({ username }) {
             </select>
           </div>
           <div className="flex gap-2 px-2 py-3">
-            <p className="text-sm text-gray-800">All time</p>
+            <p className="text-sm md:flex hidden text-gray-800">All time</p>
             <select
               name="timeRange"
-              className="w-[70px] border-[1px] outline-none border-gray-500"
+              className="md:w-32 w-[100px] text-xs md:text-base border-[1px] outline-none border-gray-500"
               id="timeRange"
               onChange={handleTimeRangeChange}
             >
@@ -76,11 +76,12 @@ function Dashboard({ username }) {
               <option value="past_week">Past Week</option>
               <option value="past_month">Past Month</option>
               <option value="past_year">Past Year</option>
+              <option value="past_year">Custom Range</option>
             </select>
           </div>
         </div>
         {/* Replace static text with dynamic data */}
-        <div className="px-3 md:flex hidden py-2 text-sm text-gray-600">
+        <div className="px-3 md:flex items-center hidden py-2 text-sm text-gray-600">
           <p>
             {resultInfo.totalResults.toLocaleString()} results (
             {resultInfo.timeTaken} seconds)
