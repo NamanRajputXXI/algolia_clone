@@ -130,7 +130,7 @@ const Data = ({
   }, [page, searchQuery, filter, sortBy, timeRange]);
 
   return (
-    <div className="max-w-7xl py-2 flex flex-col">
+    <div className="max-w-7xl w-full py-2 flex flex-col">
       {stories.map((story, i) => (
         <div key={i} className="mb-5">
           <h2 className="font-medium">
@@ -149,14 +149,24 @@ const Data = ({
       ))}
 
       {!loading && (
-        <div className="mt-5 text-center">
-          {/* Pagination */}
+        <div className="mt-5 text-center flex items-center justify-center gap-1">
+          {/* Previous Button */}
+          {page > 0 && ( // Only render the button if the page is greater than 0
+            <button
+              onClick={() => handlePageChange(0)} // Always move to the first page
+              className={`px-2 text-gray-400 rounded text-md border-[1px] border-gray-400 hover:border-[#ff742b]`}
+            >
+              &lt;
+            </button>
+          )}
+
+          {/* Pagination Numbers */}
           {paginationNumbers().map((num) => (
             <button
               key={num}
               onClick={() => handlePageChange(num)}
               disabled={page === num}
-              className={`px-2 mx-1 text-gray-400 rounded text-md ${
+              className={`px-2  text-gray-400 rounded text-md ${
                 page === num
                   ? "border-[1px] border-[#ff742b] cursor-not-allowed"
                   : "border-[1px] border-gray-400"
@@ -165,6 +175,19 @@ const Data = ({
               {num + 1}
             </button>
           ))}
+
+          {/* Next Button */}
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages - 1}
+            className={`px-2  text-gray-400 rounded text-md ${
+              page === totalPages - 1
+                ? "border-[1px] border-gray-300 cursor-not-allowed"
+                : "border-[1px] border-gray-400 hover:border-[#ff742b]"
+            }`}
+          >
+            &gt;
+          </button>
         </div>
       )}
     </div>

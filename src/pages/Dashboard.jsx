@@ -80,7 +80,7 @@ function Dashboard({ username }) {
           </div>
         </div>
         {/* Replace static text with dynamic data */}
-        <div className="px-3 py-2 text-sm text-gray-600">
+        <div className="px-3 md:flex hidden py-2 text-sm text-gray-600">
           <p>
             {resultInfo.totalResults.toLocaleString()} results (
             {resultInfo.timeTaken} seconds)
