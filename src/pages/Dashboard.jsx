@@ -21,6 +21,7 @@ function Dashboard({ username }) {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -68,10 +69,15 @@ function Dashboard({ username }) {
     setFilter(params.get("type") || "story");
     setSortBy(params.get("sort") || "popularity");
     setTimeRange(params.get("dateRange") || "all_time");
+
+    if (isFirstRender && !location.search) {
+      setIsFirstRender(false);
+    }
   }, [location.search]);
 
   useEffect(() => {
     // Update the URL whenever state changes
+    if (isFirstRender) return;
     const params = new URLSearchParams();
     params.set("query", searchQuery);
     params.set("type", filter);
@@ -79,7 +85,7 @@ function Dashboard({ username }) {
     params.set("dateRange", timeRange);
 
     navigate(`?${params.toString()}`, { replace: true });
-  }, [searchQuery, filter, sortBy, timeRange, navigate]);
+  }, [searchQuery, filter, sortBy, timeRange, navigate, isFirstRender]);
   return (
     <div className="flex max-w-7xl mb-10 mx-auto flex-col items-center justify-center bg-gray-100">
       <SerachBar username={username} onSearch={handleSearch} />

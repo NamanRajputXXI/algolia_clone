@@ -122,6 +122,9 @@ const Data = ({
       const endTime = performance.now();
       const timeDifference = ((endTime - startTime) / 1000).toFixed(3);
       setTimeTaken(timeDifference);
+      if (onResultInfoUpdate) {
+        onResultInfoUpdate(data.nbHits, timeDifference); // Pass the total results and time taken
+      }
     } catch (error) {
       console.error("Error fetching stories:", error);
     } finally {
