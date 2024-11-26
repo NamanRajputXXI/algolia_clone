@@ -72,11 +72,11 @@ const Data = ({
     const dateRangeFromUrl = timeRange || params.get("dateRange");
 
     try {
-      let baseUrl = `http://hn.algolia.com/api/v1/search`;
+      let baseUrl = `https://hn.algolia.com/api/v1/search`;
       const filterTag = filterFromUrl !== "all" ? `&tags=${filterFromUrl}` : "";
 
       if (sortFromUrl === "date") {
-        baseUrl = `http://hn.algolia.com/api/v1/search_by_date`;
+        baseUrl = `https://hn.algolia.com/api/v1/search_by_date`;
       }
 
       const now = Date.now() / 1000;
